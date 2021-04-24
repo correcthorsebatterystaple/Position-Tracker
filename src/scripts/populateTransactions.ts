@@ -19,9 +19,9 @@ const areEqualShallow = (a: {}, b: {}): boolean => {
 };
 
 const history = {
-  cashDeposit: path.join(__dirname, '../history/cash-deposit-history.csv'),
-  cryptoBuy: path.join(__dirname, '../history/crypto-buy-history.csv'),
-  trade: path.join(__dirname, '../history/trade-history.csv'),
+  cashDeposit: path.join(__dirname, '../../history/cash-deposit-history.csv'),
+  cryptoBuy: path.join(__dirname, '../../history/crypto-buy-history.csv'),
+  trade: path.join(__dirname, '../../history/trade-history.csv'),
 }
 
 const cashDepositCsv = fs.readFileSync(history.cashDeposit);
