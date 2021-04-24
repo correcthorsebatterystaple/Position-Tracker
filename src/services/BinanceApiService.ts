@@ -1,0 +1,31 @@
+import fetch from 'node-fetch';
+import { BinanceApiResponse } from '../interfaces/BinanceApiResponse';
+
+export class BinanceApiService {
+  private readonly API_KEY_HEADER = 'X-MBX-APIKEY';
+  private readonly BASE_URL = 'https://api.binance.com';
+  private authHeaders: { [key: string]: string };
+
+  constructor(private apiKey: string) {
+    this.authHeaders = {};
+    this.authHeaders[this.API_KEY_HEADER] = apiKey;
+  }
+
+  protected async get<T = any>(
+    endpoint: string,
+    queryParams: { [key: string]: string | number } = {},
+    headers: { [key: string]: string } = {}
+  ): Promise<BinanceApiResponse<T>> {
+    const encodedQueryParams = '?'.concat(
+      Object.keys(queryParams)
+        .map((key) => `${key}=${queryParams[key]}`)
+        .join('&')
+    );
+    return fetch(this.BASE_URL + endpoint + encodedQueryParams, {
+      headers: {
+        ...this.authHeaders,
+        ...headers,
+      },
+    }).then((res) => res.json().then((d) => ({ status: res.status, body: d })));
+  }
+}
