@@ -1,4 +1,3 @@
-import { BinanceApiResponse } from '../interfaces/BinanceApiResponse';
 import { BinanceApiService } from './BinanceApiService';
 import * as crypto from 'crypto';
 
