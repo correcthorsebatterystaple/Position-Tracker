@@ -7,7 +7,7 @@ export interface Transaction {
   exchange?: string;
   group?: string;
   comment?: string;
-  date: string;
+  date: number;
 }
 
 export interface IncomeTransaction extends Transaction {

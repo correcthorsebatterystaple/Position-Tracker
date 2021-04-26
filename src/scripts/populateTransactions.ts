@@ -5,8 +5,9 @@ import { IncomeTransaction, TradeTransaction, Transaction } from '../interfaces/
 
 export function populateTransactions(csvPath: string) {
   const csv = fs.readFileSync(csvPath)
-  const data: Transaction[] = parseCsv(csv, {
+  const data: {[key:string]: any}[] = parseCsv(csv, {
     cast: true,
+    castDate: true,
     columns: [
       'type',
       'buy',
@@ -25,6 +26,8 @@ export function populateTransactions(csvPath: string) {
     rtrim: true,
   });
 
-
-  fs.writeFileSync(path.join(__dirname, '../transactions.json'), JSON.stringify(data));
+  const transactions = data.map(d => {
+    return {...d, date: d.date.valueOf()}
+  });
+  fs.writeFileSync(path.join(__dirname, '../transactions.json'), JSON.stringify(transactions));
 }
