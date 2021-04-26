@@ -3,11 +3,11 @@ import stringifyCsv from 'csv-stringify/lib/sync';
 import parseCsv from 'csv-parse/lib/sync';
 import fs from 'fs';
 import path from 'path';
-import uuid from 'uuid';
 import crypto from 'crypto';
 import { MarketApiService } from './services/MarketApiService';
+import {Position, PositionWithComputedData} from './interfaces/Position'
 import 'colors';
-import { printTable, Table } from 'console-table-printer';
+import { PositionsLogger } from './helpers/PositionsLogger';
 
 (async function main() {
   const _args = require('minimist')(process.argv.slice(2));
@@ -68,83 +68,40 @@ import { printTable, Table } from 'console-table-printer';
 
   if (args.log) {
     const logArgs = {
-      showAll: _args.all || false,
+      all: true,
+      cumulative: _args.cumulative || false,
+      avg: _args.avg || false,
+      positions: _args.positions || false,
     };
+
+    logArgs.all = !(logArgs.cumulative || logArgs.avg || logArgs.positions);
 
     const marketApi = new MarketApiService(process.env.API_KEY);
     const ticker = await marketApi.getSymbolPriceTicker();
 
     const csv = fs.readFileSync(path.join(process.cwd(), 'positions.csv'));
-    const positions: any[] = parseCsv(csv, {
+    const positions: Position[] = parseCsv(csv, {
       cast: true,
-      columns: true,
+      columns: ['id', 'date', 'ticker', 'amount', 'openingPrice', 'status', 'closingPrice'],
     });
 
-    const positionsDisplay = positions
-      .filter((p) => p.status === 'OPEN' || logArgs.showAll)
-      .map((p) => {
-        const res = {
-          id: p.id.substring(0, 7).concat('...'),
-          date: new Date(p.date).toLocaleString(),
-          ticker: p.ticker,
-          amount: p.amount,
-          openingPrice: p.opening_price,
-          // 'current price': symbolPrice,
-          // 'opening total': openingTotal,
-          // 'current total': currentTotal,
-          // 'gain/loss': ((currentTotal - openingTotal) / openingTotal),
-        };
-        return res;
-      })
-      .sort();
+    const positionsWithComputedData: PositionWithComputedData[] = positions.map(pos => {
+      const currentPrice = parseFloat(ticker.find(x => x.symbol === `${pos.ticker}USDT`)?.price);
+      const currentCost = pos.amount * currentPrice;
+      const openingCost = pos.amount * pos.openingPrice;
+      return {
+        ...pos,
+        currentPrice: currentPrice,
+        currentCost: currentCost,
+        openingCost: openingCost,
+        gainLoss: (currentCost/openingCost - 1) * 100
+      }
+    });
 
-    const getCurrentPrice = (symbol) => {
-      return parseFloat(ticker.find((t) => t.symbol === `${symbol}USDT`)?.price);
-    };
-    const getGainLossPercentage = (symbol, openingPrice, amount) => {
-      const currentTotal = amount * getCurrentPrice(symbol);
-      const openingTotal = amount * openingPrice;
-      return (currentTotal / openingTotal - 1) * 100;
-    };
+    const logger = new PositionsLogger(positionsWithComputedData);
 
-    const table = new Table({
-      sort: (a, b) => (a.ticker > b.ticker ? -1 : a.ticker < b.ticker ? 1 : 0),
-      columns: [
-        { name: 'id' },
-        { name: 'date' },
-        { name: 'ticker' },
-        { name: 'amount' },
-        { name: 'openingPrice', title: 'opening price' },
-      ],
-      computedColumns: [
-        {
-          name: 'current price',
-          function: (v) => getCurrentPrice(v.ticker).toPrecision(5),
-        },
-        {
-          name: 'opening total',
-          function: (v) => (v.amount * v.openingPrice).toPrecision(5),
-        },
-        {
-          name: 'current total',
-          function: (v) => (v.amount * getCurrentPrice(v.ticker)).toPrecision(5),
-        },
-        {
-          name: 'gain/loss',
-          function: (v) => getGainLossPercentage(v.ticker, v.openingPrice, v.amount).toPrecision(3) + '%',
-        },
-      ],
-    });
-    positionsDisplay.forEach((p) => {
-      table.addRow(p);
-    });
-    table.table.rows.forEach( r => {
-      const gainLoss = getGainLossPercentage(r.text.ticker, r.text.openingPrice, r.text.amount);
-      if (gainLoss >= 0) r.color = 'green';
-      else r.color = 'red';
-    });
-    table.printTable();
-    console.log(`Cum. Opening total: ${positions.reduce((acc, p) => acc + p.opening_price * p.amount, 0)}`);
-    return;
+    (logArgs.all || logArgs.positions) && logger.logPositions();
+    (logArgs.all || logArgs.cumulative) && logger.logCumulative();
+    (logArgs.all || logArgs.avg) && logger.logAvgCostPerCurreny();
   }
 })();
