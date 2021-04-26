@@ -7,7 +7,7 @@ import uuid from 'uuid';
 import crypto from 'crypto';
 import { MarketApiService } from './services/MarketApiService';
 import 'colors';
-
+import { printTable, Table } from 'console-table-printer';
 
 (async function main() {
   const _args = require('minimist')(process.argv.slice(2));
@@ -57,7 +57,7 @@ import 'colors';
       columns: true,
     });
 
-    const position = positions.find((p) => p.id === closeArgs.id || p.id.substring(0,7) === closeArgs.id);
+    const position = positions.find((p) => p.id === closeArgs.id || p.id.substring(0, 7) === closeArgs.id);
 
     position.status = 'CLOSED';
     position.closing_price = closeArgs.closingPrice;
@@ -83,23 +83,68 @@ import 'colors';
     const positionsDisplay = positions
       .filter((p) => p.status === 'OPEN' || logArgs.showAll)
       .map((p) => {
-        const symbolPrice = parseFloat(ticker.find(t => t.symbol === `${p.ticker}USDT`)?.price);
-        const currentTotal = p.amount * symbolPrice;
-        const openingTotal = p.amount * p.opening_price;
         const res = {
-          id: p.id.substring(0,7).concat('...'),
+          id: p.id.substring(0, 7).concat('...'),
           date: new Date(p.date).toLocaleString(),
           ticker: p.ticker,
-          amount: p.amount.toPrecision(5),
-          'opening price': p.opening_price.toPrecision(5),
-          'opening total': openingTotal.toPrecision(5),
-          'current total': currentTotal.toPrecision(5),
-          'gain/loss': ((currentTotal-openingTotal)/openingTotal).toPrecision(5),
+          amount: p.amount,
+          openingPrice: p.opening_price,
+          // 'current price': symbolPrice,
+          // 'opening total': openingTotal,
+          // 'current total': currentTotal,
+          // 'gain/loss': ((currentTotal - openingTotal) / openingTotal),
         };
         return res;
-      }).sort((a, b) => a.ticker > b.ticker ? -1 : a.ticker < b.ticker ? 1 : 0);
-    console.table(positionsDisplay);
-    console.log(`Cum. Opening total: ${positions.reduce((acc, p) => acc + (p.opening_price*p.amount), 0)}`);
+      })
+      .sort();
+
+    const getCurrentPrice = (symbol) => {
+      return parseFloat(ticker.find((t) => t.symbol === `${symbol}USDT`)?.price);
+    };
+    const getGainLossPercentage = (symbol, openingPrice, amount) => {
+      const currentTotal = amount * getCurrentPrice(symbol);
+      const openingTotal = amount * openingPrice;
+      return (currentTotal / openingTotal - 1) * 100;
+    };
+
+    const table = new Table({
+      sort: (a, b) => (a.ticker > b.ticker ? -1 : a.ticker < b.ticker ? 1 : 0),
+      columns: [
+        { name: 'id' },
+        { name: 'date' },
+        { name: 'ticker' },
+        { name: 'amount' },
+        { name: 'openingPrice', title: 'opening price' },
+      ],
+      computedColumns: [
+        {
+          name: 'current price',
+          function: (v) => getCurrentPrice(v.ticker).toPrecision(5),
+        },
+        {
+          name: 'opening total',
+          function: (v) => (v.amount * v.openingPrice).toPrecision(5),
+        },
+        {
+          name: 'current total',
+          function: (v) => (v.amount * getCurrentPrice(v.ticker)).toPrecision(5),
+        },
+        {
+          name: 'gain/loss',
+          function: (v) => getGainLossPercentage(v.ticker, v.openingPrice, v.amount).toPrecision(3) + '%',
+        },
+      ],
+    });
+    positionsDisplay.forEach((p) => {
+      table.addRow(p);
+    });
+    table.table.rows.forEach( r => {
+      const gainLoss = getGainLossPercentage(r.text.ticker, r.text.openingPrice, r.text.amount);
+      if (gainLoss >= 0) r.color = 'green';
+      else r.color = 'red';
+    });
+    table.printTable();
+    console.log(`Cum. Opening total: ${positions.reduce((acc, p) => acc + p.opening_price * p.amount, 0)}`);
     return;
   }
 })();
