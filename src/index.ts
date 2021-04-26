@@ -83,9 +83,7 @@ import 'colors';
     const positionsDisplay = positions
       .filter((p) => p.status === 'OPEN' || logArgs.showAll)
       .map((p) => {
-        console.log(p);
         const symbolPrice = parseFloat(ticker.find(t => t.symbol === `${p.ticker}USDT`)?.price);
-        console.log({symbolPrice})
         const currentTotal = p.amount * symbolPrice;
         const openingTotal = p.amount * p.opening_price;
         const res = {
@@ -93,15 +91,15 @@ import 'colors';
           date: new Date(p.date).toLocaleString(),
           ticker: p.ticker,
           amount: p.amount.toPrecision(5),
+          'opening price': p.opening_price.toPrecision(5),
           'opening total': openingTotal.toPrecision(5),
           'current total': currentTotal.toPrecision(5),
           'gain/loss': ((currentTotal-openingTotal)/openingTotal).toPrecision(5),
-          status: p.status,
-          'closing price': p.status === 'OPEN' ? undefined : p.closing_price,
         };
         return res;
-      });
+      }).sort((a, b) => a.ticker > b.ticker ? -1 : a.ticker < b.ticker ? 1 : 0);
     console.table(positionsDisplay);
+    console.log(`Cum. Opening total: ${positions.reduce((acc, p) => acc + (p.opening_price*p.amount), 0)}`);
     return;
   }
 })();
