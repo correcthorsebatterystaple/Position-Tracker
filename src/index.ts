@@ -115,7 +115,8 @@ import { PositionsLogger } from './helpers/PositionsLogger';
         currentPrice: currentPrice,
         currentCost: currentCost,
         openingCost: openingCost,
-        gainLoss: (currentCost / openingCost - 1) * 100,
+        gainLoss: currentCost - openingCost,
+        gainLossPercentage: (currentCost / openingCost - 1) * 100,
       };
     });
 

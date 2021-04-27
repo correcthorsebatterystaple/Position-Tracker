@@ -12,5 +12,6 @@ export interface PositionWithComputedData extends Position {
   currentPrice: number;
   openingCost: number;
   currentCost: number;
+  gainLossPercentage: number;
   gainLoss: number;
 }

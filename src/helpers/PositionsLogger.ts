@@ -19,6 +19,7 @@ export class PositionsLogger {
         { name: 'openingCost', title: 'Opening Cost' },
         { name: 'currentCost', title: 'Current Cost' },
         { name: 'gainLoss', title: 'Gain/Loss' },
+        { name: 'gainLossPercentage', title: 'Gain/Loss %' },
       ],
       sort: (a, b) => (a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0),
     });
@@ -32,9 +33,10 @@ export class PositionsLogger {
         currentPrice: p.currentPrice.toPrecision(5),
         openingCost: p.openingCost.toPrecision(5),
         currentCost: p.currentCost.toPrecision(5),
-        gainLoss: p.gainLoss.toPrecision(5),
+        gainLoss: p.gainLoss.toFixed(2),
+        gainLossPercentage: p.gainLossPercentage.toPrecision(5),
       };
-      table.addRow(display, { color: p.gainLoss >= 0 ? 'green' : 'red' });
+      table.addRow(display, { color: p.gainLossPercentage >= 0 ? 'green' : 'red' });
     });
 
     table.printTable();
