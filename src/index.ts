@@ -27,15 +27,15 @@ import { PositionsLogger } from './helpers/PositionsLogger';
 
   if (args.open) {
     const openArgs = {
-      ticker: _args.ticker,
-      amount: parseFloat(_args.amount),
-      price: parseFloat(_args.price),
+      ticker: _args.ticker || _args.t,
+      amount: parseFloat(_args.amount) || _args.a,
+      price: parseFloat(_args.price) || _args.p,
       date: _args.date && new Date(_args.date),
     };
     if (!openArgs.ticker || !openArgs.amount || !openArgs.price) {
       console.log(`${'ERR'.red} --ticker, --price, and --amount must be present to open a position`);
       return;
-    }
+    } 
 
     const position = [openArgs.date || Date.now(), openArgs.ticker, openArgs.amount, openArgs.price, 'OPEN', undefined];
 
