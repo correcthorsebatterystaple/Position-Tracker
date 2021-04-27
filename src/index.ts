@@ -53,7 +53,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
 
   if (args.close) {
     const closeArgs = {
-      id: _args._[1],
+      id: _args.id,
       closingPrice: _args.price,
     };
     if (!closeArgs.id || !closeArgs.closingPrice) {
@@ -68,10 +68,22 @@ import { PositionsLogger } from './helpers/PositionsLogger';
 
     const position = positions.find((p) => p.id === closeArgs.id || p.id.substring(0, 7) === closeArgs.id);
 
+    if (!position || position.status === 'CLOSED') {
+      console.log(`${'ERR'.red} No open position found with id ${closeArgs.id.substring(0,7)}...`);
+      return;
+    }
+
     position.status = 'CLOSED';
     position.closing_price = closeArgs.closingPrice;
 
     fs.writeFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv(positions, { header: true }));
+    console.log(`${'OK'.green} Sold ${position.amount} ${position.ticker} for $${closeArgs.closingPrice}`);
+    const openingCost = position.amount * position.opening_price;
+    const closingCost = position.amount * closeArgs.closingPrice;
+    const gainLossPercent = (closingCost / openingCost - 1) * 100;
+    const gainLoss = closingCost - openingCost;
+    const isPositive = gainLoss > 0;
+    console.log('   Gain/Loss: ' + `${gainLoss.toPrecision(5)} ${gainLossPercent.toFixed(3)}%`[isPositive ? 'green' : 'red']);
     return;
   }
 
