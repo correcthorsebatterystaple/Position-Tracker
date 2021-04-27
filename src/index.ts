@@ -21,7 +21,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
 
   if (args.init) {
     const headers = ['id', 'date', 'ticker', 'amount', 'opening_price', 'status', 'closing_price'];
-    fs.writeFileSync(path.join(process.cwd(), 'positions.csv'), stringifyCsv([headers]));
+    fs.writeFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv([headers]));
     return;
   }
 
@@ -41,7 +41,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
       .digest('hex');
     position.unshift(hash);
 
-    fs.appendFileSync(path.join(process.cwd(), 'positions.csv'), stringifyCsv([position]));
+    fs.appendFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv([position]));
 
     return;
   }
@@ -51,7 +51,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
       id: _args._[1],
       closingPrice: _args.price,
     };
-    const csv = fs.readFileSync(path.join(process.cwd(), 'positions.csv'));
+    const csv = fs.readFileSync(path.join(__dirname, '../positions.csv'));
     const positions: any[] = parseCsv(csv, {
       cast: true,
       columns: true,
@@ -62,7 +62,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
     position.status = 'CLOSED';
     position.closing_price = closeArgs.closingPrice;
 
-    fs.writeFileSync(path.join(process.cwd(), 'positions.csv'), stringifyCsv(positions, { header: true }));
+    fs.writeFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv(positions, { header: true }));
     return;
   }
 
@@ -79,7 +79,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
     const marketApi = new MarketApiService(process.env.API_KEY);
     const ticker = await marketApi.getSymbolPriceTicker();
 
-    const csv = fs.readFileSync(path.join(process.cwd(), 'positions.csv'));
+    const csv = fs.readFileSync(path.join(__dirname, '../positions.csv'));
     const positions: Position[] = parseCsv(csv, {
       cast: true,
       columns: ['id', 'date', 'ticker', 'amount', 'openingPrice', 'status', 'closingPrice'],
