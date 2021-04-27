@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { MarketApiService } from './services/MarketApiService';
-import {Position, PositionWithComputedData} from './interfaces/Position'
+import { Position, PositionWithComputedData } from './interfaces/Position';
 import 'colors';
 import { PositionsLogger } from './helpers/PositionsLogger';
 
@@ -106,8 +106,8 @@ import { PositionsLogger } from './helpers/PositionsLogger';
       columns: ['id', 'date', 'ticker', 'amount', 'openingPrice', 'status', 'closingPrice'],
     });
 
-    const positionsWithComputedData: PositionWithComputedData[] = positions.map(pos => {
-      const currentPrice = parseFloat(ticker.find(x => x.symbol === `${pos.ticker}USDT`)?.price);
+    const positionsWithComputedData: PositionWithComputedData[] = positions.map((pos) => {
+      const currentPrice = parseFloat(ticker.find((x) => x.symbol === `${pos.ticker}USDT`)?.price);
       const currentCost = pos.amount * currentPrice;
       const openingCost = pos.amount * pos.openingPrice;
       return {
@@ -115,8 +115,8 @@ import { PositionsLogger } from './helpers/PositionsLogger';
         currentPrice: currentPrice,
         currentCost: currentCost,
         openingCost: openingCost,
-        gainLoss: (currentCost/openingCost - 1) * 100
-      }
+        gainLoss: (currentCost / openingCost - 1) * 100,
+      };
     });
 
     const logger = new PositionsLogger(positionsWithComputedData);
