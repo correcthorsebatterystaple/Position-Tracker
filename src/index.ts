@@ -30,13 +30,14 @@ import { PositionsLogger } from './helpers/PositionsLogger';
       ticker: _args.ticker,
       amount: parseFloat(_args.amount),
       price: parseFloat(_args.price),
+      date: _args.date && new Date(_args.date),
     };
     if (!openArgs.ticker || !openArgs.amount || !openArgs.price) {
       console.log(`${'ERR'.red} --ticker, --price, and --amount must be present to open a position`);
       return;
     }
 
-    const position = [Date.now(), openArgs.ticker, openArgs.amount, openArgs.price, 'OPEN', undefined];
+    const position = [openArgs.date || Date.now(), openArgs.ticker, openArgs.amount, openArgs.price, 'OPEN', undefined];
 
     const hash = crypto
       .createHash('sha256')
@@ -45,6 +46,7 @@ import { PositionsLogger } from './helpers/PositionsLogger';
     position.unshift(hash);
 
     fs.appendFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv([position]));
+    console.log(`${'OK'.green} Bought ${openArgs.amount} ${openArgs.ticker} for $${openArgs.price}`);
 
     return;
   }
