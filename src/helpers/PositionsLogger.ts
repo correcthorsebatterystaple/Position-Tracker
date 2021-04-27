@@ -48,8 +48,8 @@ export class PositionsLogger {
     const table = new Table();
     table.addRow(
       {
-        'Cum. Opening Total': openingTotalCost.toPrecision(5),
-        'Cum. Current Total': currentTotalCost.toPrecision(5),
+        'Opening Cost Total': openingTotalCost.toPrecision(5),
+        'Current Cost Total': currentTotalCost.toPrecision(5),
         'Gain/Loss': gainLoss.toPrecision(3),
       },
       { color: gainLoss >= 0 ? 'green' : 'red' }
