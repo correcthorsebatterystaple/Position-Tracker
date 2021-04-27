@@ -26,14 +26,17 @@ import { PositionsLogger } from './helpers/PositionsLogger';
   }
 
   if (args.open) {
-    const addArgs = {
+    const openArgs = {
       ticker: _args.ticker,
       amount: parseFloat(_args.amount),
       price: parseFloat(_args.price),
     };
-    console.log(addArgs);
+    if (!openArgs.ticker || !openArgs.amount || !openArgs.price) {
+      console.log(`${'ERR'.red} --ticker, --price, and --amount must be present to open a position`);
+      return;
+    }
 
-    const position = [Date.now(), addArgs.ticker, addArgs.amount, addArgs.price, 'OPEN', undefined];
+    const position = [Date.now(), openArgs.ticker, openArgs.amount, openArgs.price, 'OPEN', undefined];
 
     const hash = crypto
       .createHash('sha256')
@@ -51,6 +54,10 @@ import { PositionsLogger } from './helpers/PositionsLogger';
       id: _args._[1],
       closingPrice: _args.price,
     };
+    if (!closeArgs.id || !closeArgs.closingPrice) {
+      console.log(`${'ERR'.red} --id and --price must be present to close a position`);
+      return;
+    }
     const csv = fs.readFileSync(path.join(__dirname, '../positions.csv'));
     const positions: any[] = parseCsv(csv, {
       cast: true,
