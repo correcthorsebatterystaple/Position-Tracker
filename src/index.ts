@@ -139,6 +139,13 @@ import { Logger } from './helpers/Logger';
       ticker: _args.ticker || _args.t || false,
     };
     const marketApi = new MarketApiService(process.env.API_KEY);
-    const ticker = await marketApi.getSymbolPriceTicker();
+    const [ticker] = await marketApi.getSymbolPriceTicker(priceArgs.ticker);
+
+    if (!ticker) {
+      Logger.ERR(`${priceArgs.ticker} not found`);
+      return;
+    }
+
+    Logger.OK(`${priceArgs.ticker}: $${parseFloat(ticker.price).toPrecision(5)}`);
   }
 })();
