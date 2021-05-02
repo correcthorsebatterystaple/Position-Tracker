@@ -1,12 +1,20 @@
+import { MarketApiService } from '../services/MarketApiService';
 import { ICommand } from './interfaces/ICommand';
 
 export class PriceCommand implements ICommand {
-  constructor() {}
   name: string;
+  private symbol: string;
+
+  constructor() {}
+
   setArguments(args: string[]): void {
-    throw new Error('Method not implemented.');
+    this.symbol = args[0];
   }
-  execute(): void {
-    throw new Error('Method not implemented.');
+
+  async execute(): Promise<void> {
+    const marketApi = new MarketApiService(process.env.API_KEY);
+    const [ticker] = await marketApi.getSymbolPriceTicker(this.symbol);
+
+    console.log(`${this.symbol}: ${ticker.price}`);
   }
 }

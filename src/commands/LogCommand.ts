@@ -5,7 +5,7 @@ export class LogCommand implements ICommand {
   setArguments(args: string[]): void {
     throw new Error("Method not implemented.");
   }
-  execute(): void {
+  async execute() {
     throw new Error("Method not implemented.");
   }
 
