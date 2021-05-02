@@ -3,3 +3,4 @@ node_modules
 transactions.json
 .env
 dist
+.vscode
