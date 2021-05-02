@@ -1,8 +1,9 @@
 import { ICommand } from './commands/ICommand';
 import { ICommandData } from './commands/ICommandData';
+import { OpenCommand } from './commands/OpenCommand';
 
 export class CommandFactory {
-  private commandMapping: ICommand[] = [];
+  private commandMapping: ICommand[] = [new OpenCommand()];
   private defaultCommand: ICommand = undefined;
   constructor() {}
 

@@ -9,6 +9,7 @@ import { Position, PositionWithComputedData } from './interfaces/Position';
 import 'colors';
 import { PositionsLogger } from './helpers/PositionsLogger';
 import { Logger } from './helpers/Logger';
+import { OpenCommand } from './commands/OpenCommand';
 
 (async function main() {
   const _args = require('minimist')(process.argv.slice(2));
@@ -19,6 +20,7 @@ import { Logger } from './helpers/Logger';
     close: _args._[0] === 'close',
     log: _args._[0] === 'log',
     price: _args._[0] === 'price',
+    test: _args._[0] === 'test',
   };
 
   if (args.init) {
@@ -28,28 +30,9 @@ import { Logger } from './helpers/Logger';
   }
 
   if (args.open) {
-    const openArgs = {
-      ticker: _args.ticker || _args.t,
-      amount: parseFloat(_args.amount) || _args.a,
-      price: parseFloat(_args.price) || _args.p,
-      date: _args.date && new Date(_args.date),
-    };
-    if (!openArgs.ticker || !openArgs.amount || !openArgs.price) {
-      Logger.ERR('--ticker, --price, and --amount must be present to open a position');
-      return;
-    }
-
-    const position = [openArgs.date || Date.now(), openArgs.ticker, openArgs.amount, openArgs.price, 'OPEN', undefined];
-
-    const hash = crypto
-      .createHash('sha256')
-      .update(stringifyCsv([position]))
-      .digest('hex');
-    position.unshift(hash);
-
-    fs.appendFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv([position]));
-    Logger.OK(`Bought ${openArgs.amount} ${openArgs.ticker} at $${openArgs.price}`);
-
+    const command = new OpenCommand();
+    command.setArguments(process.argv.slice(3));
+    command.execute();
     return;
   }
 
@@ -147,5 +130,10 @@ import { Logger } from './helpers/Logger';
     }
 
     Logger.OK(`${priceArgs.ticker}: $${parseFloat(ticker.price).toPrecision(5)}`);
+  }
+
+  if (args.test) {
+    
+    return;
   }
 })();
