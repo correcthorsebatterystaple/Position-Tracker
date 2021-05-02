@@ -48,7 +48,7 @@ import { Logger } from './helpers/Logger';
     position.unshift(hash);
 
     fs.appendFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv([position]));
-    Logger.OK(`Bought ${openArgs.amount} ${openArgs.ticker} for $${openArgs.price}`);
+    Logger.OK(`Bought ${openArgs.amount} ${openArgs.ticker} at $${openArgs.price}`);
 
     return;
   }
