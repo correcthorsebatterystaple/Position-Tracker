@@ -1,5 +1,5 @@
 export interface ICommand {
   readonly name: string;
-  setArguments: (args: string[]) => void,
-  execute: () => void;
+  setArguments(args: string[]): void,
+  execute(): void;
 }
