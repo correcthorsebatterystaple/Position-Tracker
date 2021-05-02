@@ -7,6 +7,9 @@ export class CommandFactory {
   constructor() {}
 
   create(data: ICommandData): ICommand {
-    return this.commandMapping.find(cmd => cmd.name === data.name) || this.defaultCommand;
+    const command = this.commandMapping.find((cmd) => cmd.name === data.name) || this.defaultCommand;
+    command.setArguments(data.args);
+
+    return command;
   }
 }
