@@ -1,6 +1,6 @@
 import minimist from 'minimist';
 import { CommandFactory } from './CommandFactory';
-import { ICommandData } from './commands/ICommandData';
+import { ICommandData } from './commands/interfaces/ICommandData';
 
 export class Processor {
   private commandFactory: CommandFactory;
@@ -8,11 +8,11 @@ export class Processor {
     const commandFactory = new CommandFactory();
   }
 
-  process(args: string[]): void {
+  async process(args: string[]) {
     const commandData = this.parseArguments(args);
     const command = this.commandFactory.create(commandData)
 
-    command.execute();
+    await command.execute();
   }
 
   private parseArguments(args: string[]): ICommandData {

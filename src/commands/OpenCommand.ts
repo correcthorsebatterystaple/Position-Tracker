@@ -34,7 +34,7 @@ export class OpenCommand implements ICommand {
     }
   }
 
-  execute() {
+  async execute() {
     const position = [
       this.args.date || Date.now(),
       this.args.ticker,
