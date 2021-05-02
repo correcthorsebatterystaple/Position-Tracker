@@ -1,4 +1,4 @@
-import { ICommand } from './ICommand';
+import { ICommand } from './interfaces/ICommand';
 
 export class CloseCommand implements ICommand {
   readonly name: string = 'close';

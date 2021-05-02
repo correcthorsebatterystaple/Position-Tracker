@@ -1,4 +1,4 @@
-import { ICommand } from './ICommand';
+import { ICommand } from './interfaces/ICommand';
 
 export class PriceCommand implements ICommand {
   constructor() {}

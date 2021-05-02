@@ -1,14 +1,14 @@
 import minimist from 'minimist';
-import { ICommand } from './ICommand';
-import { OpenCommandArgs } from './IOpenCommandArgs';
+import { ICommand } from './interfaces/ICommand';
 import crypto from 'crypto';
 import stringifyCsv from 'csv-stringify/lib/sync';
 import fs from 'fs';
 import path from 'path';
+import { IOpenCommandArgs } from './interfaces/IOpenCommandArgs';
 
 export class OpenCommand implements ICommand {
   readonly name = 'open';
-  private args: OpenCommandArgs;
+  private args: IOpenCommandArgs;
   constructor() {}
 
   setArguments(args: string[]) {

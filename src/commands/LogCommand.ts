@@ -1,4 +1,4 @@
-import { ICommand } from "./ICommand";
+import { ICommand } from "./interfaces/ICommand";
 
 export class LogCommand implements ICommand {
   name: string;

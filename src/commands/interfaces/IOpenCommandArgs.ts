@@ -1,4 +1,4 @@
-export interface OpenCommandArgs {
+export interface IOpenCommandArgs {
   ticker: string;
   amount: number;
   price: number;
