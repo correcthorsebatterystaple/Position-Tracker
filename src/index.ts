@@ -11,6 +11,8 @@ import { PositionsLogger } from './helpers/PositionsLogger';
 import { Logger } from './helpers/Logger';
 import { OpenCommand } from './commands/OpenCommand';
 import { CloseCommand } from './commands/CloseCommand';
+import { PriceCommand } from './commands/PriceCommand';
+import { LogCommand } from './commands/LogCommand';
 
 (async function main() {
   const _args = require('minimist')(process.argv.slice(2));
@@ -45,60 +47,17 @@ import { CloseCommand } from './commands/CloseCommand';
   }
 
   if (args.log) {
-    const logArgs = {
-      all: true,
-      cumulative: _args.cumulative || false,
-      avg: _args.avg || false,
-      positions: _args.positions || false,
-    };
-
-    logArgs.all = !(logArgs.cumulative || logArgs.avg || logArgs.positions);
-
-    const marketApi = new MarketApiService(process.env.API_KEY);
-    const ticker = await marketApi.getSymbolPriceTicker();
-
-    const csv = fs.readFileSync(path.join(__dirname, '../positions.csv'));
-    const positions: Position[] = parseCsv(csv, {
-      cast: true,
-      columns: ['id', 'date', 'ticker', 'amount', 'openingPrice', 'status', 'closingPrice'],
-    });
-
-    const positionsWithComputedData: PositionWithComputedData[] = positions
-      .filter((pos) => pos.status === 'OPEN')
-      .map((pos) => {
-        const currentPrice = parseFloat(ticker.find((x) => x.symbol === `${pos.ticker}USDT`)?.price);
-        const currentCost = pos.amount * currentPrice;
-        const openingCost = pos.amount * pos.openingPrice;
-        return {
-          ...pos,
-          currentPrice: currentPrice,
-          currentCost: currentCost,
-          openingCost: openingCost,
-          gainLoss: currentCost - openingCost,
-          gainLossPercentage: (currentCost / openingCost - 1) * 100,
-        };
-      });
-
-    const logger = new PositionsLogger(positionsWithComputedData);
-
-    (logArgs.all || logArgs.positions) && logger.logPositions();
-    (logArgs.all || logArgs.cumulative) && logger.logCumulative();
-    (logArgs.all || logArgs.avg) && logger.logAvgCostPerCurreny();
+    const command = new LogCommand();
+    command.setArguments(process.argv.slice(3));
+    await command.execute();
+    return;
   }
 
   if (args.price) {
-    const priceArgs = {
-      ticker: _args.ticker || _args.t || false,
-    };
-    const marketApi = new MarketApiService(process.env.API_KEY);
-    const [ticker] = await marketApi.getSymbolPriceTicker(priceArgs.ticker);
-
-    if (!ticker) {
-      Logger.ERR(`${priceArgs.ticker} not found`);
-      return;
-    }
-
-    Logger.OK(`${priceArgs.ticker}: $${parseFloat(ticker.price).toPrecision(5)}`);
+    const command = new PriceCommand();
+    command.setArguments(process.argv.slice(3));
+    await command.execute();
+    return;
   }
 
   if (args.test) {
