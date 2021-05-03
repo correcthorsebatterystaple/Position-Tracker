@@ -10,6 +10,7 @@ import 'colors';
 import { PositionsLogger } from './helpers/PositionsLogger';
 import { Logger } from './helpers/Logger';
 import { OpenCommand } from './commands/OpenCommand';
+import { CloseCommand } from './commands/CloseCommand';
 
 (async function main() {
   const _args = require('minimist')(process.argv.slice(2));
@@ -32,46 +33,14 @@ import { OpenCommand } from './commands/OpenCommand';
   if (args.open) {
     const command = new OpenCommand();
     command.setArguments(process.argv.slice(3));
-    command.execute();
+    await command.execute();
     return;
   }
 
   if (args.close) {
-    const closeArgs = {
-      id: _args.id,
-      closingPrice: _args.price,
-    };
-    if (!closeArgs.id || !closeArgs.closingPrice) {
-      Logger.ERR(`--id and --price must be present to close a position`);
-      return;
-    }
-    const csv = fs.readFileSync(path.join(__dirname, '../positions.csv'));
-    const positions: any[] = parseCsv(csv, {
-      cast: true,
-      columns: true,
-    });
-
-    const position = positions.find((p) => {
-      return p.id === closeArgs.id || p.id.substring(0, 7) === closeArgs.id;
-    });
-    if (!position || position.status === 'CLOSED') {
-      Logger.ERR(`No open position found with id ${closeArgs.id.substring(0, 7)}...`);
-      return;
-    }
-
-    position.status = 'CLOSED';
-    position.closing_price = closeArgs.closingPrice;
-
-    fs.writeFileSync(path.join(__dirname, '../positions.csv'), stringifyCsv(positions, { header: true }));
-    Logger.OK(`Sold ${position.amount} ${position.ticker} for $${closeArgs.closingPrice}`);
-    const openingCost = position.amount * position.opening_price;
-    const closingCost = position.amount * closeArgs.closingPrice;
-    const gainLossPercent = (closingCost / openingCost - 1) * 100;
-    const gainLoss = closingCost - openingCost;
-    const isPositive = gainLoss > 0;
-    Logger.LOG(
-      'Gain/Loss: ' + `${gainLoss.toPrecision(5)} ${gainLossPercent.toFixed(3)}%`[isPositive ? 'green' : 'red']
-    );
+    const command = new CloseCommand();
+    command.setArguments(process.argv.slice(3));
+    await command.execute();
     return;
   }
 
@@ -133,7 +102,6 @@ import { OpenCommand } from './commands/OpenCommand';
   }
 
   if (args.test) {
-    
     return;
   }
 })();
