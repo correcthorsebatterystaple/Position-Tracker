@@ -11,13 +11,17 @@ export class PositionRepository {
 
   constructor(filename: string = 'positions.csv') {
     const rootDir = path.dirname(require.main.filename);
-    this.filePath = path.join(rootDir, '../', filename);
+    this.filePath = path.join(rootDir, filename);
     const csv = fs.readFileSync(this.filePath);
     this.positions = parseCsv(csv, {
       cast: true,
       trim: true,
       columns: true,
     });
+  }
+
+  async getAllPositions(): Promise<Position[]> {
+    return this.positions.map(pos => this.mapPositionDataToPosition(pos));
   }
 
   async getPositionById(id: string): Promise<Position> {
