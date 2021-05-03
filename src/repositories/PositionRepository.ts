@@ -10,15 +10,14 @@ export class PositionRepository {
   private positions: IPositionData[];
   private filePath: string;
 
-  private constructor(filename: string = 'positions.csv') {
+  constructor(filename: string = 'positions.csv') {
     const rootDir = path.dirname(require.main.filename);
-    this.filePath = path.join(rootDir, filename);
+    this.filePath = path.join(rootDir, '../', filename);
     const csv = fs.readFileSync(this.filePath);
     this.positions = parseCsv(csv, {
       cast: true,
       trim: true,
       columns: true,
-      fromLine: 2,
     });
   }
 
@@ -46,7 +45,7 @@ export class PositionRepository {
 
     row.unshift(id);
 
-    await fs.promises.appendFile(this.filePath, row.join(','));
+    await fs.promises.appendFile(this.filePath, row.join(',').concat('\n'));
 
     return id;
   }
