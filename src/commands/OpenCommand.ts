@@ -5,10 +5,15 @@ import stringifyCsv from 'csv-stringify/lib/sync';
 import fs from 'fs';
 import path from 'path';
 import { IOpenCommandArgs } from './interfaces/IOpenCommandArgs';
+import { PositionRepository } from '../repositories/PositionRepository';
+import { IPositionData } from '../repositories/IPositionData';
+import { PositionStatus } from '../enums/PositionStatusEnum';
 
 export class OpenCommand implements ICommand {
   readonly name = 'open';
   private args: IOpenCommandArgs;
+  private positionRepository = new PositionRepository();
+  
   constructor() {}
 
   setArguments(args: string[]) {
@@ -35,22 +40,15 @@ export class OpenCommand implements ICommand {
   }
 
   async execute() {
-    const position = [
-      this.args.date || Date.now(),
-      this.args.ticker,
-      this.args.amount,
-      this.args.price,
-      'OPEN',
-      undefined,
-    ];
+    const position = {
+      date: this.args.date || Date.now(),
+      ticker: this.args.ticker,
+      amount: this.args.amount,
+      opening_price: this.args.price,
+      status: PositionStatus.OPEN,
+    };
 
-    const hash = crypto
-      .createHash('sha256')
-      .update(stringifyCsv([position]))
-      .digest('hex');
-    position.unshift(hash);
-
-    fs.appendFileSync(path.join(path.dirname(require.main.filename), './positions.csv'), stringifyCsv([position]));
-    console.log(`Bought ${this.args.amount} ${this.args.ticker} at $${this.args.price}`);
+    const id = await this.positionRepository.insertPosition(position);
+    console.log(`Bought ${this.args.amount} ${this.args.ticker} at $${this.args.price}: ${id}`);
   }
 }
