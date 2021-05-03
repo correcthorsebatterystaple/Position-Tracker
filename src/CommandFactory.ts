@@ -1,6 +1,6 @@
 import { CloseCommand } from './commands/CloseCommand';
-import { ICommand } from './commands/interfaces/ICommand';
-import { ICommandData } from './commands/interfaces/ICommandData';
+import { ICommand } from './interfaces/ICommand';
+import { ICommandData } from './interfaces/ICommandData';
 import { LogCommand } from './commands/LogCommand';
 import { OpenCommand } from './commands/OpenCommand';
 import { PriceCommand } from './commands/PriceCommand';

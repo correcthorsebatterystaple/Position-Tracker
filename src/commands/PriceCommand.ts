@@ -1,5 +1,5 @@
 import { MarketApiService } from '../services/MarketApiService';
-import { ICommand } from './interfaces/ICommand';
+import { ICommand } from '../interfaces/ICommand';
 
 export class PriceCommand implements ICommand {
   name: string;

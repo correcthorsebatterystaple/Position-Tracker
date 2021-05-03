@@ -1,6 +1,6 @@
 import minimist from 'minimist';
-import { ICloseCommandArgs } from './interfaces/ICloseCommandArgs';
-import { ICommand } from './interfaces/ICommand';
+import { ICloseCommandArgs } from '../interfaces/ICloseCommandArgs';
+import { ICommand } from '../interfaces/ICommand';
 import { PositionRepository } from '../repositories/PositionRepository';
 import { PositionStatus } from '../enums/PositionStatusEnum';
 

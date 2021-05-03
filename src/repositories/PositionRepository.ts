@@ -1,4 +1,4 @@
-import { IPositionData } from './IPositionData';
+import { IPositionData } from '../interfaces/IPositionData';
 import path from 'path';
 import fs from 'fs';
 import parseCsv from 'csv-parse/lib/sync';

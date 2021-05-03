@@ -1,6 +1,6 @@
 import minimist from 'minimist';
 import { CommandFactory } from './CommandFactory';
-import { ICommandData } from './commands/interfaces/ICommandData';
+import { ICommandData } from './interfaces/ICommandData';
 
 export class Processor {
   private commandFactory: CommandFactory;
