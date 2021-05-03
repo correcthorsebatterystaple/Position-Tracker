@@ -1,12 +1,7 @@
 import minimist from 'minimist';
 import { ICommand } from './interfaces/ICommand';
-import crypto from 'crypto';
-import stringifyCsv from 'csv-stringify/lib/sync';
-import fs from 'fs';
-import path from 'path';
 import { IOpenCommandArgs } from './interfaces/IOpenCommandArgs';
 import { PositionRepository } from '../repositories/PositionRepository';
-import { IPositionData } from '../repositories/IPositionData';
 import { PositionStatus } from '../enums/PositionStatusEnum';
 
 export class OpenCommand implements ICommand {

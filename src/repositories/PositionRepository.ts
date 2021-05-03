@@ -2,7 +2,6 @@ import { IPositionData } from './IPositionData';
 import path from 'path';
 import fs from 'fs';
 import parseCsv from 'csv-parse/lib/sync';
-import stringifyCsv from 'csv-stringify/lib/sync';
 import { Position } from '../interfaces/Position';
 import crypto from 'crypto';
 
