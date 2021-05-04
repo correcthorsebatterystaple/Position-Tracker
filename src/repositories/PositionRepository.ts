@@ -64,20 +64,21 @@ export class PositionRepository {
       throw new Error(`Position not found: ${id}`);
     }
 
-    positionToUpdate.status ??= position.status;
-    positionToUpdate.closing_price ??= position.closing_price;
+    positionToUpdate.status = position.status ?? positionToUpdate.status;
+    positionToUpdate.closing_price = position.closing_price ?? positionToUpdate.closing_price;
+    positionToUpdate.amount = position.amount ?? positionToUpdate.amount;
 
     const csvPositions = this.positions
       .map((pos) =>
-        [pos.id, pos.date, pos.ticker, pos.amount, pos.opening_price, pos.status, pos.closing_price ?? ''].join(',')
+        [pos.id, pos.date, pos.ticker, pos.amount, pos.opening_price, pos.status, pos.closing_price].join(',')
       )
       .join('\n')
       .concat('\n');
 
-    const csvHeaders = 'id,date,ticker,amount,opening_price,status,closing_price';
+    const csvHeaders = 'id,date,ticker,amount,opening_price,status,closing_price\n';
 
     await fs.promises.writeFile(this.filePath, csvHeaders);
-    await fs.promises.appendFile(this.filePath, csvPositions)
+    await fs.promises.appendFile(this.filePath, csvPositions);
 
     return positionToUpdate;
   }
