@@ -48,6 +48,7 @@ export class CloseCommand implements ICommand {
       // add new closed postion with amount and closing price
       await this.positionRepository.insertPosition({
         ...position,
+        date: Date.now(),
         status: PositionStatus.CLOSED,
         amount: this.args.amount,
         closing_price: this.args.price,
