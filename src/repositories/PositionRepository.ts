@@ -45,6 +45,7 @@ export class PositionRepository {
       position.opening_price,
       position.status,
       position.closing_price,
+      position.parent,
     ];
     const rowCsv = row.join(',');
 
@@ -74,12 +75,12 @@ export class PositionRepository {
 
     const csvPositions = this.positions
       .map((pos) =>
-        [pos.id, pos.date, pos.ticker, pos.amount, pos.opening_price, pos.status, pos.closing_price].join(',')
+        [pos.id, pos.date, pos.ticker, pos.amount, pos.opening_price, pos.status, pos.closing_price, pos.parent].join(',')
       )
       .join('\n')
       .concat('\n');
 
-    const csvHeaders = 'id,date,ticker,amount,opening_price,status,closing_price\n';
+    const csvHeaders = 'id,date,ticker,amount,opening_price,status,closing_price,parent\n';
 
     await fs.promises.writeFile(this.filePath, csvHeaders);
     await fs.promises.appendFile(this.filePath, csvPositions);

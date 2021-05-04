@@ -18,7 +18,7 @@ export class CloseCommand implements ICommand {
       alias: {
         i: 'id',
         p: 'price',
-        a: 'amount'
+        a: 'amount',
       },
     });
 
@@ -42,7 +42,7 @@ export class CloseCommand implements ICommand {
       const position = await this.positionRepository.getPositionById(this.args.id, false);
 
       if (this.args.amount > position.amount) {
-        throw new Error(`Closing amount cannot be greater than existing amount: ${position.amount-this.args.amount}`);
+        throw new Error(`Closing amount cannot be greater than existing amount: ${position.amount - this.args.amount}`);
       }
 
       // add new closed postion with amount and closing price
@@ -52,6 +52,7 @@ export class CloseCommand implements ICommand {
         status: PositionStatus.CLOSED,
         amount: this.args.amount,
         closing_price: this.args.price,
+        parent: position.id,
       });
       // update amount on old position
       await this.positionRepository.updatePosition(this.args.id, {

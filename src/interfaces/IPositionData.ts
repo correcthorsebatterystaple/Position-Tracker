@@ -8,4 +8,5 @@ export interface IPositionData {
   opening_price: number;
   status: PositionStatus;
   closing_price?: number;
+  parent?: string;
 }

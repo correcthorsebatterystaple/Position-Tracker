@@ -6,6 +6,7 @@ export interface Position {
   openingPrice: number;
   status: 'OPEN' | 'CLOSED';
   closingPrice?: number;
+  parent?: string;
 }
 
 export interface PositionWithComputedData extends Position {
