@@ -50,6 +50,11 @@ export class PositionRepository {
 
     await fs.promises.appendFile(this.filePath, row.join(',').concat('\n'));
 
+    this.positions.push({
+      ...position,
+      id: id,
+    });
+
     return id;
   }
 
