@@ -20,17 +20,21 @@ export class PositionRepository {
     });
   }
 
-  async getAllPositions(): Promise<Position[]> {
-    return this.positions.map(pos => this.mapPositionDataToPosition(pos));
+  async getAllPositions(map?: true): Promise<Position[]>;
+  async getAllPositions(map?: false): Promise<IPositionData[]>;
+  async getAllPositions(map = true): Promise<(Position | IPositionData)[]> {
+    return map ? this.positions.map((pos) => this.mapPositionDataToPosition(pos)) : this.positions;
   }
 
-  async getPositionById(id: string): Promise<Position> {
+  async getPositionById(id: string, map?: true): Promise<Position>;
+  async getPositionById(id: string, map?: false): Promise<IPositionData>;
+  async getPositionById(id: string, map = true): Promise<Position | IPositionData> {
     const position = this.positions.find((pos) => pos.id === id || pos.id.substring(0, 7) === id);
     if (!position) {
       throw new Error(`Position not found: ${id}`);
     }
 
-    return this.mapPositionDataToPosition(position);
+    return map ? this.mapPositionDataToPosition(position) : position;
   }
 
   async insertPosition(position: Omit<IPositionData, 'id'>): Promise<string> {
