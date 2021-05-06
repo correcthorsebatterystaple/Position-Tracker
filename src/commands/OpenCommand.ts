@@ -8,7 +8,7 @@ export class OpenCommand implements ICommand {
   readonly name = 'open';
   private args: IOpenCommandArgs;
   private positionRepository = new PositionRepository();
-  
+
   constructor() {
     // do nothing
   }

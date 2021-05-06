@@ -26,6 +26,6 @@ export class SpotApiService extends BinanceApiService {
       timestamp: Date.now().toString(),
     });
 
-    return this.get(endpoint, params).then(res => res.body);
+    return this.get(endpoint, params).then((res) => res.body);
   }
 }

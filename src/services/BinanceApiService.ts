@@ -12,7 +12,7 @@ export class BinanceApiService {
     this.authHeaders[this.API_KEY_HEADER] = apiKey;
   }
 
-  protected async get<T = unknown>(
+  protected async get<T>(
     endpoint: string,
     queryParams: { [key: string]: string | number } = {},
     headers: { [key: string]: string } = {}

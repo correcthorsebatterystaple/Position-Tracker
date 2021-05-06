@@ -53,22 +53,22 @@ export class LogCommand implements ICommand {
     }
   }
 
-  private computeAdditionalPositionInfo(positions: Position[], ticker: {symbol: string; price: string}[]): PositionWithComputedData[] {
-    return positions
-      .map((pos) => {
-        const currentPrice = parseFloat(
-          ticker.find((x: { symbol: string }) => x.symbol === `${pos.ticker}USDT`)?.price
-        );
-        const currentCost = pos.amount * currentPrice;
-        const openingCost = pos.amount * pos.openingPrice;
-        return {
-          ...pos,
-          currentPrice: currentPrice,
-          currentCost: currentCost,
-          openingCost: openingCost,
-          gainLoss: currentCost - openingCost,
-          gainLossPercentage: (currentCost / openingCost - 1) * 100,
-        };
-      });
+  private computeAdditionalPositionInfo(
+    positions: Position[],
+    ticker: { symbol: string; price: string }[]
+  ): PositionWithComputedData[] {
+    return positions.map((pos) => {
+      const currentPrice = parseFloat(ticker.find((x: { symbol: string }) => x.symbol === `${pos.ticker}USDT`)?.price);
+      const currentCost = pos.amount * currentPrice;
+      const openingCost = pos.amount * pos.openingPrice;
+      return {
+        ...pos,
+        currentPrice: currentPrice,
+        currentCost: currentCost,
+        openingCost: openingCost,
+        gainLoss: currentCost - openingCost,
+        gainLossPercentage: (currentCost / openingCost - 1) * 100,
+      };
+    });
   }
 }

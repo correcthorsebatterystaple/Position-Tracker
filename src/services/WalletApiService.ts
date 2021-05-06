@@ -19,15 +19,15 @@ export class WalletApiService extends BinanceApiService {
     };
   }
 
-  async getAllCoinsInformation(): Promise<{symbol: string; price: string}[]> {
+  async getAllCoinsInformation(): Promise<{ symbol: string; price: string }[]> {
     const endpoint = '/sapi/v1/capital/config/getall';
     const params = this.getSignedParameters({ timestamp: Date.now().toString() });
-    return this.get<{symbol: string; price: string}[]>(endpoint, params).then(res => res.body);
+    return this.get<{ symbol: string; price: string }[]>(endpoint, params).then((res) => res.body);
   }
 
   async getDepositHistory(): Promise<unknown> {
     const endpoint = '/wapi/v3/depositHistory.html';
     const params = this.getSignedParameters({ timestamp: Date.now().toString() });
-    return this.get(endpoint, params).then(res => res.body);
+    return this.get(endpoint, params).then((res) => res.body);
   }
 }

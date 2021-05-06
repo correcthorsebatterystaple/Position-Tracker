@@ -75,7 +75,9 @@ export class PositionRepository {
 
     const csvPositions = this.positions
       .map((pos) =>
-        [pos.id, pos.date, pos.ticker, pos.amount, pos.opening_price, pos.status, pos.closing_price, pos.parent].join(',')
+        [pos.id, pos.date, pos.ticker, pos.amount, pos.opening_price, pos.status, pos.closing_price, pos.parent].join(
+          ','
+        )
       )
       .join('\n')
       .concat('\n');

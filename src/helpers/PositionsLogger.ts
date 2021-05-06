@@ -6,7 +6,7 @@ import 'colors';
 export class PositionsLogger {
   private openPositions: PositionWithComputedData[];
   constructor(positions: PositionWithComputedData[]) {
-    this.openPositions = positions.sort((a,b)=> a.date - b.date);
+    this.openPositions = positions.sort((a, b) => a.date - b.date);
   }
 
   logPositions(showClosed = true): void {
@@ -44,7 +44,7 @@ export class PositionsLogger {
         return display;
       });
 
-    rows.forEach(row => table.addRow(row));
+    rows.forEach((row) => table.addRow(row));
     table.printTable();
   }
 

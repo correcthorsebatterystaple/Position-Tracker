@@ -1,4 +1,4 @@
-export interface BinanceApiResponse<T extends Record<string, unknown>> {
+export interface BinanceApiResponse<T> {
   status: number;
   body: T;
 }
