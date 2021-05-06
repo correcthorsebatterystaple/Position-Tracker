@@ -5,7 +5,9 @@ export class PriceCommand implements ICommand {
   name: string;
   private symbol: string;
 
-  constructor() {}
+  constructor() {
+    // do nothing
+  }
 
   setArguments(args: string[]): void {
     this.symbol = args[0];

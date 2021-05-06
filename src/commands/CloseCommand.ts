@@ -9,7 +9,9 @@ export class CloseCommand implements ICommand {
   private args: ICloseCommandArgs;
   private positionRepository = new PositionRepository();
 
-  constructor() {}
+  constructor() {
+    // do nothing
+  }
 
   setArguments(args: string[]): void {
     const parsedArgs = minimist(args, {
@@ -37,7 +39,7 @@ export class CloseCommand implements ICommand {
     }
   }
 
-  async execute() {
+  async execute(): Promise<void> {
     if (this.args.partial) {
       const position = await this.positionRepository.getPositionById(this.args.id, false);
 

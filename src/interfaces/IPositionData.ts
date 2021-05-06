@@ -1,4 +1,4 @@
-import { PositionStatus } from "../enums/PositionStatusEnum";
+import { PositionStatus } from '../enums/PositionStatusEnum';
 
 export interface IPositionData {
   id: string;

@@ -9,7 +9,7 @@ export class PositionRepository {
   private positions: IPositionData[];
   private filePath: string;
 
-  constructor(filename: string = 'positions.csv') {
+  constructor(filename = 'positions.csv') {
     const rootDir = path.dirname(require.main.filename);
     this.filePath = path.join(rootDir, filename);
     const csv = fs.readFileSync(this.filePath);
@@ -63,7 +63,7 @@ export class PositionRepository {
     return id;
   }
 
-  async updatePosition(id: string, position: Partial<Omit<IPositionData, 'id'>>) {
+  async updatePosition(id: string, position: Partial<Omit<IPositionData, 'id'>>): Promise<IPositionData> {
     const positionToUpdate = this.positions.find((pos) => pos.id === id || pos.id.substring(0, 7) === id);
     if (!positionToUpdate) {
       throw new Error(`Position not found: ${id}`);

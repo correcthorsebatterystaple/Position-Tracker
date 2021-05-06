@@ -1,6 +1,6 @@
 import { Table } from 'console-table-printer';
 import { PositionStatus } from '../enums/PositionStatusEnum';
-import { Position, PositionWithComputedData } from '../interfaces/Position';
+import { PositionWithComputedData } from '../interfaces/Position';
 import 'colors';
 
 export class PositionsLogger {
@@ -9,7 +9,7 @@ export class PositionsLogger {
     this.openPositions = positions.sort((a,b)=> a.date - b.date);
   }
 
-  logPositions(showClosed = true) {
+  logPositions(showClosed = true): void {
     const table = new Table({
       columns: [
         { name: 'id', title: 'Id' },
@@ -48,7 +48,7 @@ export class PositionsLogger {
     table.printTable();
   }
 
-  logCumulative() {
+  logCumulative(): void {
     const openingTotalCost = this.openPositions.reduce((acc, pos) => acc + pos.openingCost, 0);
     const currentTotalCost = this.openPositions.reduce((acc, pos) => acc + pos.currentCost, 0);
     const gainLossPercent = (currentTotalCost / openingTotalCost - 1) * 100;
@@ -67,7 +67,7 @@ export class PositionsLogger {
     table.printTable();
   }
 
-  logAvgCostPerCurreny() {
+  logAvgCostPerCurreny(): void {
     const totalOpeningCostByTicker = this.openPositions.reduce((acc, pos) => {
       acc[pos.ticker] = (acc[pos.ticker] ?? 0) + pos.openingCost;
       return acc;

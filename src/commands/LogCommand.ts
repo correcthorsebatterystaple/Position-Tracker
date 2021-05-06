@@ -7,12 +7,14 @@ import { PositionRepository } from '../repositories/PositionRepository';
 import { MarketApiService } from '../services/MarketApiService';
 
 export class LogCommand implements ICommand {
-  name: string = 'log';
+  name = 'log';
   private args: ILogCommandArgs;
   private positionRepository = new PositionRepository();
   private marketApiService = new MarketApiService(process.env.API_KEY);
 
-  constructor() {}
+  constructor() {
+    // do nothing
+  }
 
   setArguments(args: string[]): void {
     const parseArgs = minimist(args, {
@@ -33,7 +35,7 @@ export class LogCommand implements ICommand {
     };
   }
 
-  async execute() {
+  async execute(): Promise<void> {
     const ticker = this.marketApiService.getSymbolPriceTicker();
     const positions = this.positionRepository.getAllPositions();
 
@@ -51,7 +53,7 @@ export class LogCommand implements ICommand {
     }
   }
 
-  private computeAdditionalPositionInfo(positions: Position[], ticker: any[]): PositionWithComputedData[] {
+  private computeAdditionalPositionInfo(positions: Position[], ticker: {symbol: string; price: string}[]): PositionWithComputedData[] {
     return positions
       .map((pos) => {
         const currentPrice = parseFloat(

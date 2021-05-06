@@ -9,9 +9,11 @@ export class OpenCommand implements ICommand {
   private args: IOpenCommandArgs;
   private positionRepository = new PositionRepository();
   
-  constructor() {}
+  constructor() {
+    // do nothing
+  }
 
-  setArguments(args: string[]) {
+  setArguments(args: string[]): void {
     const parsedArgs = minimist(args, {
       string: 'ticker',
       alias: {
@@ -34,7 +36,7 @@ export class OpenCommand implements ICommand {
     }
   }
 
-  async execute() {
+  async execute(): Promise<void> {
     const position = {
       date: this.args.date || Date.now(),
       ticker: this.args.ticker,
