@@ -7,9 +7,9 @@ export class Processor {
     this.commandFactory = new CommandFactory();
   }
 
-  async process(args: string[]) {
+  async process(args: string[]): Promise<void> {
     const commandData = this.parseArguments(args);
-    const command = this.commandFactory.create(commandData)
+    const command = this.commandFactory.create(commandData);
 
     await command.execute();
   }

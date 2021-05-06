@@ -7,7 +7,9 @@ import { PriceCommand } from './commands/PriceCommand';
 
 export class CommandFactory {
   private commandMapping: ICommand[] = [new OpenCommand(), new CloseCommand(), new PriceCommand(), new LogCommand()];
-  constructor() {}
+  constructor() {
+    // do nothing
+  }
 
   create(data: ICommandData): ICommand {
     const command = this.commandMapping.find((cmd) => cmd.name === data.name);
