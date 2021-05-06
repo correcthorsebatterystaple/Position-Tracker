@@ -1,11 +1,10 @@
-import minimist from 'minimist';
 import { CommandFactory } from './CommandFactory';
 import { ICommandData } from './interfaces/ICommandData';
 
 export class Processor {
   private commandFactory: CommandFactory;
   constructor() {
-    const commandFactory = new CommandFactory();
+    this.commandFactory = new CommandFactory();
   }
 
   async process(args: string[]) {
