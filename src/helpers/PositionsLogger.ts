@@ -6,10 +6,10 @@ import 'colors';
 export class PositionsLogger {
   private openPositions: PositionWithComputedData[];
   constructor(positions: PositionWithComputedData[]) {
-    this.openPositions = positions.sort((a, b) => a.date - b.date);
+    this.openPositions = positions.sort((a, b) => a.date - b.date).filter((pos) => pos.status === PositionStatus.OPEN);
   }
 
-  logPositions(showClosed = true): void {
+  logPositions(): void {
     const table = new Table({
       columns: [
         { name: 'id', title: 'Id' },
@@ -25,7 +25,6 @@ export class PositionsLogger {
       ],
     });
     const rows = this.openPositions
-      .filter((p) => showClosed || p.status === PositionStatus.OPEN)
       .map((p) => {
         const display = {
           id: p.id.substring(0, 7).concat('...'),
