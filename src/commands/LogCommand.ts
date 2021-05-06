@@ -53,7 +53,6 @@ export class LogCommand implements ICommand {
 
   private computeAdditionalPositionInfo(positions: Position[], ticker: any[]): PositionWithComputedData[] {
     return positions
-      .filter((pos) => pos.status === 'OPEN')
       .map((pos) => {
         const currentPrice = parseFloat(
           ticker.find((x: { symbol: string }) => x.symbol === `${pos.ticker}USDT`)?.price

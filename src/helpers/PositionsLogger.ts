@@ -1,13 +1,15 @@
 import { Table } from 'console-table-printer';
+import { PositionStatus } from '../enums/PositionStatusEnum';
 import { Position, PositionWithComputedData } from '../interfaces/Position';
+import 'colors';
 
 export class PositionsLogger {
   private openPositions: PositionWithComputedData[];
-  constructor(private positions: PositionWithComputedData[]) {
-    this.openPositions = positions.filter((pos) => pos.status === 'OPEN');
+  constructor(positions: PositionWithComputedData[]) {
+    this.openPositions = positions.sort((a,b)=> a.date - b.date);
   }
 
-  logPositions() {
+  logPositions(showClosed = true) {
     const table = new Table({
       columns: [
         { name: 'id', title: 'Id' },
@@ -21,24 +23,28 @@ export class PositionsLogger {
         { name: 'openingCost', title: 'Opening Cost' },
         { name: 'currentCost', title: 'Current Cost' },
       ],
-      sort: (a, b) => (a.ticker < b.ticker ? -1 : a.ticker > b.ticker ? 1 : 0),
     });
-    this.openPositions.forEach((p) => {
-      const display = {
-        id: p.id.substring(0, 7).concat('...'),
-        date: new Date(p.date).toLocaleString(),
-        ticker: p.ticker,
-        amount: p.amount.toPrecision(5),
-        openingPrice: p.openingPrice.toPrecision(5),
-        currentPrice: p.currentPrice.toPrecision(5),
-        openingCost: p.openingCost.toPrecision(5),
-        currentCost: p.currentCost.toPrecision(5),
-        gainLoss: p.gainLoss.toFixed(2),
-        gainLossPercentage: p.gainLossPercentage.toFixed(2),
-      };
-      table.addRow(display, { color: p.gainLossPercentage >= 0 ? 'green' : 'red' });
-    });
+    const rows = this.openPositions
+      .filter((p) => showClosed || p.status === PositionStatus.OPEN)
+      .map((p) => {
+        const display = {
+          id: p.id.substring(0, 7).concat('...'),
+          date: new Date(p.date).toLocaleString(),
+          ticker: p.ticker,
+          amount: p.amount.toPrecision(5),
+          openingPrice: p.openingPrice.toPrecision(5),
+          currentPrice: p.currentPrice.toPrecision(5),
+          openingCost: p.openingCost.toPrecision(5),
+          currentCost: p.currentCost.toPrecision(5),
+          gainLoss: p.gainLoss.toFixed(2),
+          gainLossPercentage: p.gainLossPercentage.toFixed(2),
+        };
+        const colour = p.status === PositionStatus.CLOSED ? 'grey' : p.gainLossPercentage >= 0 ? 'green' : 'red';
+        Object.keys(display).forEach((key) => (display[key] = display[key][colour]));
+        return display;
+      });
 
+    rows.forEach(row => table.addRow(row));
     table.printTable();
   }
 
@@ -79,7 +85,7 @@ export class PositionsLogger {
         ticker: ticker,
         amount: totalAmountByTicker[ticker].toPrecision(5),
         avgCost: (avgPrice * totalAmountByTicker[ticker]).toPrecision(5),
-        currentCost: (currentCost).toPrecision(5),
+        currentCost: currentCost.toPrecision(5),
         avgPrice: avgPrice.toPrecision(5),
         currentPrice: currentPrice.toPrecision(5),
         gainLossPercent: ((currentPrice / avgPrice - 1) * 100).toPrecision(3),
