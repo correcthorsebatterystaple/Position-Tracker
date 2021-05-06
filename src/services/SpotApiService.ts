@@ -19,13 +19,13 @@ export class SpotApiService extends BinanceApiService {
     };
   }
 
-  async getAllOrders(symbol: string) {
+  async getAllOrders(symbol: string): Promise<unknown> {
     const endpoint = '/api/v3/allOrders';
     const params = this.getSignedParameters({
       symbol: symbol,
       timestamp: Date.now().toString(),
     });
 
-    return this.get(endpoint, params).then(res => res.body);
+    return this.get(endpoint, params).then((res) => res.body);
   }
 }

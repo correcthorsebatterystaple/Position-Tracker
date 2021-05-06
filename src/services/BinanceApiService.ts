@@ -5,14 +5,14 @@ export class BinanceApiService {
   private readonly API_KEY_HEADER = 'X-MBX-APIKEY';
   private readonly BASE_URL = 'https://api.binance.com';
   private authHeaders: { [key: string]: string };
-  private cooldown: number = 0;
+  private cooldown = 0;
 
   constructor(private apiKey: string) {
     this.authHeaders = {};
     this.authHeaders[this.API_KEY_HEADER] = apiKey;
   }
 
-  protected async get<T = any>(
+  protected async get<T>(
     endpoint: string,
     queryParams: { [key: string]: string | number } = {},
     headers: { [key: string]: string } = {}
