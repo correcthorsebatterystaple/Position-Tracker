@@ -156,4 +156,40 @@ describe('Position Repository', () => {
       })
     );
   });
+
+  it('should update position if params are valid', async () => {
+    mockFs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        'id,date,ticker,amount,opening_price,status,closing_price,parent\n' +
+          'uniqueId1,1000,XYZ,1,1,OPEN,,\n' +
+          'uniqueId2,1000,ABC,1,1,CLOSED,10,\n'
+      );
+    mockFs.promises.writeFile = jest.fn();
+    const repo = new PositionRepository();
+    const update = await repo.updatePosition('uniqueId1', {
+      date: 5000,
+      ticker: 'XXX',
+      amount: 7,
+      opening_price: 7,
+      closing_price: 7,
+      parent: 'table',
+      status: PositionStatus.CLOSED,
+    });
+    const positions = await repo.getAllPositions();
+    const updatedPosition = positions.find(p => p.id === 'uniqueId1');
+
+    expect(positions).toHaveLength(2);
+    expect(updatedPosition).toStrictEqual(expect.objectContaining({
+      id: 'uniqueId1',
+      date: 5000,
+      ticker: 'XXX',
+      amount: 7,
+      openingPrice: 7,
+      closingPrice: 7,
+      parent: 'table',
+      status: PositionStatus.CLOSED,
+    }));
+    expect(mockFs.promises.writeFile).toBeCalled();
+  });
 });
