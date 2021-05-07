@@ -8,13 +8,152 @@ jest.mock('fs', () => ({
   readFileSync: jest.fn(),
 }));
 import fs from 'fs';
+import { PositionStatus } from '../../src/enums/PositionStatusEnum';
 const mockFs = fs as jest.Mocked<typeof fs>;
 
 describe('Position Repository', () => {
-  it('should parse all positions from csv');
-  it('should return all positions from file');
-  it('should insert position to file and to internal store');
-  it('should throw error when updating with unknown id');
-  it('should throw error when fetching with unknown id');
-  it('should get position by id');
+  it('should parse all positions from csv', async () => {
+    mockFs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        'id,date,ticker,amount,opening_price,status,closing_price,parent\n' +
+          'uniqueId1,1000,XYZ,1,1,OPEN,,\n' +
+          'uniqueId2,1000,ABC,1,1,CLOSED,10,\n'
+      );
+
+    const repo = new PositionRepository();
+    const positions = await repo.getAllPositions();
+
+    expect(positions).toHaveLength(2);
+    expect(positions).toStrictEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'uniqueId1',
+          ticker: 'XYZ',
+          date: 1000,
+          amount: 1,
+          openingPrice: 1,
+          status: 'OPEN',
+        }),
+        expect.objectContaining({
+          id: 'uniqueId2',
+          ticker: 'ABC',
+          date: 1000,
+          amount: 1,
+          openingPrice: 1,
+          status: 'CLOSED',
+          closingPrice: 10,
+        }),
+      ])
+    );
+  });
+
+  it('should insert position to file and to internal store', async () => {
+    mockFs.promises.appendFile = jest.fn();
+    mockFs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        'id,date,ticker,amount,opening_price,status,closing_price,parent\n' +
+          'uniqueId1,1000,XYZ,1,1,OPEN,,\n' +
+          'uniqueId2,1000,ABC,1,1,CLOSED,10,\n'
+      );
+
+    const repo = new PositionRepository();
+    const id = await repo.insertPosition({
+      date: 1500,
+      amount: 2,
+      opening_price: 2,
+      status: PositionStatus.OPEN,
+      ticker: 'PQR',
+    });
+
+    const positions = await repo.getAllPositions();
+
+    expect(positions).toHaveLength(3);
+    expect(positions).toStrictEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'uniqueId1',
+          ticker: 'XYZ',
+          date: 1000,
+          amount: 1,
+          openingPrice: 1,
+          status: 'OPEN',
+        }),
+        expect.objectContaining({
+          id: 'uniqueId2',
+          ticker: 'ABC',
+          date: 1000,
+          amount: 1,
+          openingPrice: 1,
+          status: 'CLOSED',
+          closingPrice: 10,
+        }),
+        expect.objectContaining({
+          id: id,
+          ticker: 'PQR',
+          date: 1500,
+          amount: 2,
+          openingPrice: 2,
+          status: 'OPEN',
+        }),
+      ])
+    );
+  });
+
+  it('should throw error when updating with unknown id', async () => {
+    mockFs.promises.appendFile = jest.fn();
+    mockFs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        'id,date,ticker,amount,opening_price,status,closing_price,parent\n' +
+          'uniqueId1,1000,XYZ,1,1,OPEN,,\n' +
+          'uniqueId2,1000,ABC,1,1,CLOSED,10,\n'
+      );
+
+    const repo = new PositionRepository();
+    const updatePromise = repo.updatePosition('notFoundId', {
+      status: PositionStatus.CLOSED,
+    });
+
+    expect(updatePromise).rejects.not.toBeNull();
+    expect(mockFs.promises.writeFile).not.toBeCalled();
+  });
+
+  it('should throw error when fetching with unknown id', () => {
+    mockFs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        'id,date,ticker,amount,opening_price,status,closing_price,parent\n' +
+          'uniqueId1,1000,XYZ,1,1,OPEN,,\n' +
+          'uniqueId2,1000,ABC,1,1,CLOSED,10,\n'
+      );
+    const repo = new PositionRepository();
+    const getPromise = repo.getPositionById('notFoundId');
+
+    expect(getPromise).rejects.not.toBeNull();
+  });
+
+  it('should get position by id', async () => {
+    mockFs.readFileSync = jest
+      .fn()
+      .mockReturnValueOnce(
+        'id,date,ticker,amount,opening_price,status,closing_price,parent\n' +
+          'uniqueId1,1000,XYZ,1,1,OPEN,,\n' +
+          'uniqueId2,1000,ABC,1,1,CLOSED,10,\n'
+      );
+    const repo = new PositionRepository();
+    const pos = await repo.getPositionById('uniqueId1');
+
+    expect(pos).toStrictEqual(
+      expect.objectContaining({
+        id: 'uniqueId1',
+        ticker: 'XYZ',
+        date: 1000,
+        amount: 1,
+        openingPrice: 1,
+        status: 'OPEN',
+      })
+    );
+  });
 });
