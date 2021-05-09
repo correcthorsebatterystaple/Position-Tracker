@@ -6,9 +6,9 @@ import { TradeRepository } from '../repositories/TradeRepository';
 
 export class BuyCommand implements ICommand {
   name = 'buy';
-  private args: { symbol: string; cost: number; amount: number; date: string};
+  private args: { symbol: string; cost: number; amount: number; date: string };
   private readonly OTHER_SYMBOL = 'USDT';
-  private tradeRepository = new TradeRepository(); 
+  private tradeRepository = new TradeRepository();
 
   constructor() {
     // do nothing

@@ -24,24 +24,23 @@ export class PositionsLogger {
         { name: 'currentCost', title: 'Current Cost' },
       ],
     });
-    const rows = this.openPositions
-      .map((p) => {
-        const display = {
-          id: p.id.substring(0, 7).concat('...'),
-          date: new Date(p.date).toLocaleString(),
-          ticker: p.ticker,
-          amount: p.amount.toPrecision(5),
-          openingPrice: p.openingPrice.toPrecision(5),
-          currentPrice: p.currentPrice.toPrecision(5),
-          openingCost: p.openingCost.toPrecision(5),
-          currentCost: p.currentCost.toPrecision(5),
-          gainLoss: p.gainLoss.toFixed(2),
-          gainLossPercentage: p.gainLossPercentage.toFixed(2),
-        };
-        const colour = p.status === PositionStatus.CLOSED ? 'grey' : p.gainLossPercentage >= 0 ? 'green' : 'red';
-        Object.keys(display).forEach((key) => (display[key] = display[key][colour]));
-        return display;
-      });
+    const rows = this.openPositions.map((p) => {
+      const display = {
+        id: p.id.substring(0, 7).concat('...'),
+        date: new Date(p.date).toLocaleString(),
+        ticker: p.ticker,
+        amount: p.amount.toPrecision(5),
+        openingPrice: p.openingPrice.toPrecision(5),
+        currentPrice: p.currentPrice.toPrecision(5),
+        openingCost: p.openingCost.toPrecision(5),
+        currentCost: p.currentCost.toPrecision(5),
+        gainLoss: p.gainLoss.toFixed(2),
+        gainLossPercentage: p.gainLossPercentage.toFixed(2),
+      };
+      const colour = p.status === PositionStatus.CLOSED ? 'grey' : p.gainLossPercentage >= 0 ? 'green' : 'red';
+      Object.keys(display).forEach((key) => (display[key] = display[key][colour]));
+      return display;
+    });
 
     rows.forEach((row) => table.addRow(row));
     table.printTable();

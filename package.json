@@ -7,7 +7,7 @@
     "start": "node -r ts-node/register src/index.ts",
     "build": "tsc",
     "lint": "eslint src/**",
-    "prettify": "prettier",
+    "prettify": "prettier --write src/**",
     "prepare": "husky install",
     "test": "jest"
   },
