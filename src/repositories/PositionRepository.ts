@@ -71,6 +71,10 @@ export class PositionRepository {
 
     positionToUpdate.status = position.status ?? positionToUpdate.status;
     positionToUpdate.closing_price = position.closing_price ?? positionToUpdate.closing_price;
+    positionToUpdate.opening_price = position.opening_price ?? positionToUpdate.opening_price;
+    positionToUpdate.date = position.date ?? positionToUpdate.date;
+    positionToUpdate.parent = position.parent ?? positionToUpdate.parent;
+    positionToUpdate.ticker = position.ticker ?? positionToUpdate.ticker;
     positionToUpdate.amount = position.amount ?? positionToUpdate.amount;
 
     const csvPositions = this.positions
@@ -99,6 +103,7 @@ export class PositionRepository {
       status: data.status,
       ticker: data.ticker,
       closingPrice: data.closing_price,
+      parent: data.parent,
     };
   }
 }
