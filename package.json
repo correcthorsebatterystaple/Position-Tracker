@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node -r ts-node/register src/index.ts",
     "build": "tsc",
-    "lint": "eslint src/**",
-    "prettify": "prettier --write src/**",
+    "lint": "lint-staged --quiet",
     "prepare": "husky install",
     "test": "jest"
   },
@@ -34,6 +33,7 @@
     "eslint-config-google": "^0.14.0",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
+    "lint-staged": "^11.0.0",
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.6",
     "ts-node": "^9.1.1",
