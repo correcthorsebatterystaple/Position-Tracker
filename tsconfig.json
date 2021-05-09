@@ -1,5 +1,6 @@
 {
-  "include": ["src", "test"],
+  "include": ["src"], 
+  "compileOnSave": true,
   "compilerOptions": {
     "target": "ES5",
     "esModuleInterop": true,
