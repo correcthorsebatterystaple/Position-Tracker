@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import parseCsv from 'csv-parse/lib/sync';
 import { Trade } from '../models/Trade';
+
 export class TradeRepository {
   private filepath: string;
   private trades: Trade[];
