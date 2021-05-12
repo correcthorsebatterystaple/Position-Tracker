@@ -7,5 +7,5 @@ import { Processor } from './Processor';
   const processor = new Processor();
   await processor.process(process.argv.slice(2));
 })().catch((err) => {
-  Logger.ERR(err);
+  Logger.ERR(err.message);
 });
