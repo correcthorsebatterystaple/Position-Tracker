@@ -19,6 +19,10 @@ export class CommandFactory {
   }
 
   create(data: ICommandData): ICommand {
+    if (!data.name) {
+      throw new Error('Command name not provided');
+    }
+
     const command = this.commandMapping.find((cmd) => cmd.name === data.name);
 
     if (!command) {
