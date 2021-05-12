@@ -15,7 +15,15 @@ export class BuyCommand implements ICommand {
   }
 
   setArguments(args: string[]): void {
-    const parsedArgs = minimist(args, { string: ['symbol'] });
+    const parsedArgs = minimist(args, {
+      string: ['symbol'],
+      alias: {
+        s: 'symbol',
+        d: 'date',
+        c: 'cost',
+        a: 'amount',
+      },
+    });
     this.args = {
       date: parsedArgs.date,
       symbol: parsedArgs.symbol,
@@ -39,6 +47,6 @@ export class BuyCommand implements ICommand {
 
     await this.tradeRepository.addTrade(trade);
 
-    Logger.OK(`Bought ${this.args.symbol.toUpperCase()} for $${this.args.cost}`);
+    Logger.OK(`Bought ${this.args.amount} ${this.args.symbol.toUpperCase()} for $${this.args.cost}`);
   }
 }
