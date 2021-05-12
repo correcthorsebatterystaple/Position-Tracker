@@ -2,7 +2,7 @@ import { MarketApiService } from '../services/MarketApiService';
 import { ICommand } from '../interfaces/ICommand';
 
 export class PriceCommand implements ICommand {
-  name: string;
+  name = 'price';
   private symbol: string;
 
   constructor() {
